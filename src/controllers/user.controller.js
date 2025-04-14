@@ -3,38 +3,58 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ApiResponse } from "../utils/apiresponse.js";
 import userModel from "../models/user.model.js";
-
+// import upload from "../middlewares/multer.js";
+// import { uploadToCloudinary } from "../utils/cloudinary.js";
+// import crypto from "crypto";
 // Register User
+// const registerUser = asyncHandler(async (req, res) => {
+//   const { name, email, password } = req.body;
+//   if (!name || !email || !password) {
+//     res.status(400);
+//     throw new Error("Please fill all the fields");
+//   }
+//   const existedUser = await userModel.findOne({ $or: [{ email }] });
+//   if (existedUser) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "User already exists",
+//     });
+//   }
+//   const newUser = await userModel.create({
+//     name,
+//     email,
+//     password: bcrypt.hashSync(password, 10),
+//   });
+//   const createdUser = await userModel
+//     .findById(newUser._id)
+//     .select("-password -refreshToken");
+//   if (!createdUser) {
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to create user",
+//     });
+//   }
+//   return res
+//     .status(201)
+//     .json(new ApiResponse(true, "User created successfully", createdUser));
+// });
+
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    res.status(400);
-    throw new Error("Please fill all the fields");
-  }
-  const existedUser = await userModel.findOne({ $or: [{ email }] });
-  if (existedUser) {
-    return res.status(400).json({
-      success: false,
-      message: "User already exists",
+  try {
+    const userData = req.body;
+
+    const newUser = new userModel(userData);
+    await newUser.save();
+    // const secretKey = crypto.randomBytes(32).toString("hex"); // Generate a random secret key
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
+    // Sign the token with the secret key
+    res.status(200).json({
+      success: true,
+      token,
     });
+  } catch (error) {
+    console.log("Error creating users", error);
   }
-  const newUser = await userModel.create({
-    name,
-    email,
-    password: bcrypt.hashSync(password, 10),
-  });
-  const createdUser = await userModel
-    .findById(newUser._id)
-    .select("-password -refreshToken");
-  if (!createdUser) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to create user",
-    });
-  }
-  return res
-    .status(201)
-    .json(new ApiResponse(true, "User created successfully", createdUser));
 });
 
 // Login User

@@ -32,8 +32,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: [
-        "men",
-        "women",
+        "Men",
+        "Women",
         "Non-binary",
         "Transgender",
         "Prefer not to say",
@@ -43,31 +43,8 @@ const userSchema = new mongoose.Schema(
     datingIntension: {
       type: String,
       required: true,
-      enum: [
-        "Long Term Relationship",
-        "Short Term Relationship",
-        "Long Term but open to short",
-        "Short Term but open to long",
-        "Prefer not to say",
-      ],
     },
-    bio: {
-      type: String,
-    },
-    foodPreference: {
-      type: String,
-      enum: [
-        "Vegetarian",
-        "Non-Vegetarian",
-        "Vegan",
-        "Jain",
-        "Prefer not to say",
-      ],
-    },
-    motherTongue: {
-      type: String,
-    },
-    oneWord: {
+    datingPreferences: {
       type: String,
     },
     height: {
@@ -76,10 +53,10 @@ const userSchema = new mongoose.Schema(
       ft: { type: Number },
       inch: { type: Number },
     },
-    hometown: {
+    religion: {
       type: String,
     },
-    religion: {
+    hometown: {
       type: String,
     },
     collegeInfo: {
@@ -91,15 +68,43 @@ const userSchema = new mongoose.Schema(
       drinkOption: { type: String, enum: ["Yes", "No"] },
       smokeOption: { type: String, enum: ["Yes", "No"] },
     },
-    datingPreferences: {
+    foodPreference: {
       type: String,
     },
-    selectedInterests: {
+    knownLanguages: {
       type: [String],
     },
-    selectedMovies: {
-      type: [Object], // To store movie objects
+    motherTongue: {
+      type: String,
     },
+    profileImage: {
+      type: String,
+    },
+    userPhotos: [
+      {
+        type: String,
+      },
+    ],
+    movie: [
+      {
+        title: String,
+        backdrop_path: String,
+        poster_path: String,
+      },
+    ],
+    selectedInterests: [
+      {
+        ids: Number,
+        names: String,
+      },
+    ],
+    oneWord: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
+
     userPrompts: {
       type: Map,
       of: {
@@ -107,16 +112,39 @@ const userSchema = new mongoose.Schema(
         answer: { type: String },
       },
     },
-    registrationData: {
-      type: Map,
-      of: {
-        prompt: { type: String },
-        answer: { type: String },
+
+    likedProfiles: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    recivedLikes: [
+      {
+        userid: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        image: {
+          type: String,
+          required: true,
+        },
+        Comment: {
+          type: String,
+        },
       },
-    },
-    knownLanguages: {
-      type: [String],
-    },
+    ],
+    matches: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    blockedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );
