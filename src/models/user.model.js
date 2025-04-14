@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    password: {
+      type: String,
+    },
     phoneNumber: {
       type: String, // Changed to String to match the provided data
       required: true,
@@ -65,8 +68,8 @@ const userSchema = new mongoose.Schema(
       workPosition: { type: String },
     },
     drinkSmokeInfo: {
-      drinkOption: { type: String, enum: ["Yes", "No"] },
-      smokeOption: { type: String, enum: ["Yes", "No"] },
+      drinkOption: { type: String },
+      smokeOption: { type: String },
     },
     foodPreference: {
       type: String,
@@ -90,12 +93,13 @@ const userSchema = new mongoose.Schema(
         title: String,
         backdrop_path: String,
         poster_path: String,
+        id: Number,
       },
     ],
     selectedInterests: [
       {
-        ids: Number,
-        names: String,
+        id: Number,
+        name: String,
       },
     ],
     oneWord: {
@@ -113,11 +117,13 @@ const userSchema = new mongoose.Schema(
       },
     },
 
-    likedProfiles: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    recivedLikes: [
+    likedProfiles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    receivedLikes: [
       {
         userid: {
           type: mongoose.Schema.Types.ObjectId,
@@ -126,7 +132,6 @@ const userSchema = new mongoose.Schema(
         },
         image: {
           type: String,
-          required: true,
         },
         Comment: {
           type: String,
